@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <style>
+      BODY {
+      	font-size: 36pt;
+      	font-family: Arial;
+      }
+    </style>
+    <script src="http://10.255.110.148:8082/socket.io/socket.io.js"></script>
+    <script>
+      console.log('flag started');
+      
+      var tiros = 0;
+      var aciertos = 0;
+      
+      var socket = io.connect('http://10.255.110.148:8082');
+      socket.emit('flag');
+      
+      function updateScores(){
+      		document.getElementById('teamAScore').innerHTML = 'Intentos: '+tiros;
+      		document.getElementById('teamBScore').innerHTML = 'Aciertos: '+aciertos;
+      }
+      
+      socket.on('dist', function (data) {
+	        navigator.cascades.postMessage('dist-'+data);
+	  });
+	  
+      socket.on('fire', function (data) {
+      		tiros=tiros+1;
+      		var mensaje = "Fallo"
+      	  	if (data){
+      			aciertos=aciertos+1;
+      			mensaje = "Bandera";
+      			socket.emit('flag');
+      		}
+      		updateScores();
+	        navigator.cascades.postMessage(mensaje);
+	  });
+    </script>
+  </head>
+  <body onload="updateScores()">
+
+    <div id="teamAScore" style="float:left"></div>
+    <div id="teamBScore" style="float:right"></div>
+
+  </body>
+</html>

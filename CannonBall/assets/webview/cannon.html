@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <style>
+      BODY {
+      	font-size: 36pt;
+      	font-family: Arial;
+      }
+    </style>
+    <script src="http://10.255.110.148:8082/socket.io/socket.io.js"></script>
+    <script>
+      console.log('cannon started');
+      
+      var tiros = 0;
+      var aciertos = 0;
+      
+      var socket = io.connect('http://10.255.110.148:8082');
+      socket.emit('cannon');
+      
+      function updateScores(){
+      		document.getElementById('teamAScore').innerHTML = 'Intentos: '+tiros;
+      		document.getElementById('teamBScore').innerHTML = 'Aciertos: '+aciertos;
+      }
+      
+      socket.on('result', function (data) {
+      		var mensaje = "Pruebe de nuevo"
+      		if (data){
+      			aciertos=aciertos+1;
+      			updateScores();
+      			mensaje = "Felicitaciones!"
+      		}
+	        navigator.cascades.postMessage(mensaje);
+	  });
+      
+      navigator.cascades.onmessage = function onmessage(message) {
+      	  tiros=tiros+1;
+      	  updateScores();
+	      socket.emit('fire', message);
+      };
+    </script>
+  </head>
+  <body onload="updateScores()">
+
+    <div id="teamAScore" style="float:left"></div>
+    <div id="teamBScore" style="float:right"></div>
+
+  </body>
+</html>
