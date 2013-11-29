@@ -12,10 +12,10 @@ NavigationPane {
                 onTriggered: {
                     var page;
                     if (rol.selectedValue ==0){
-                        page = flag.createObject();
+                        page = cannon.createObject();
                     }
                     else {
-                        page = cannon.createObject();
+                        page = flag.createObject();
                     }
                     nav.push(page);
                 }
@@ -32,13 +32,13 @@ NavigationPane {
                 id: rol
 	            options: [
                     Option {
-                        description: "Bandera"
+                        description: "Cañón"
                         value: 0
                         selected: true
                     },
-	                Option {
-                    	description: "Cañon"
-                    	value: 1
+                    Option {
+                        description: "Bandera"
+                        value: 1
                     }
 	            ]
             }

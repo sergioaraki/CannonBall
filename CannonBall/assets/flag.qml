@@ -4,7 +4,9 @@ import bb.multimedia 1.0
 
 Page {
     actionBarVisibility: ChromeVisibility.Hidden
-    function actualizaDistancia(dist){
+    property int dist
+    function randomDistancia(){
+        dist = Math.floor((Math.random()*1000)+10);
         distancia.text = "Distancia: "+dist+" m";
     }
     Container {
@@ -81,15 +83,16 @@ Page {
             url: "local:///assets/webview/flag.html"
             id: server
             onMessageReceived: {
-                if (message.data.match('dist')) {
-                    var dist = message.data.split('-')[1];
-                    actualizaDistancia(dist);
-                }
-                else if (message.data == 'Bandera') {
+                if (message.data == 'Bandera') {
                     bajar.play();
                     pause.start();
                     animExp.play();
                     sound.play();
+                }
+            }
+            onLoadingChanged: {
+                if (loadRequest.status == WebLoadStatus.Succeeded) {
+                    server.postMessage(dist);
                 }
             }
             settings.background: Color.Transparent 
@@ -102,6 +105,8 @@ Page {
             interval: 5000
             onTimeout:{
                 subir.play();
+                randomDistancia();
+                server.postMessage(dist);
                 pause.stop();
             }
         },
@@ -112,5 +117,6 @@ Page {
     ]
     onCreationCompleted: {
         Application.mainWindow.screenIdleMode = 1;
+        randomDistancia();
     }
 }

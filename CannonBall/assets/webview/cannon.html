@@ -8,8 +8,6 @@
     </style>
     <script src="http://10.255.110.148:8082/socket.io/socket.io.js"></script>
     <script>
-      console.log('cannon started');
-      
       var tiros = 0;
       var aciertos = 0;
       
@@ -20,19 +18,16 @@
       		document.getElementById('teamAScore').innerHTML = 'Intentos: '+tiros;
       		document.getElementById('teamBScore').innerHTML = 'Aciertos: '+aciertos;
       }
-      
-      socket.on('result', function (data) {
-      		var mensaje = "Pruebe de nuevo"
-      		if (data){
-      			aciertos=aciertos+1;
-      			updateScores();
-      			mensaje = "Felicitaciones!"
-      		}
-	        navigator.cascades.postMessage(mensaje);
+	  
+      socket.on('dist', function (data) {
+      		navigator.cascades.postMessage('dist-'+data);
 	  });
-      
+	  
       navigator.cascades.onmessage = function onmessage(message) {
       	  tiros=tiros+1;
+      	  if (message == 'true'){
+      			aciertos=aciertos+1;
+      	  }
       	  updateScores();
 	      socket.emit('fire', message);
       };

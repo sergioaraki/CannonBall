@@ -6,9 +6,13 @@ import bb.multimedia 1.0
 Page {
     actionBarVisibility: ChromeVisibility.Hidden
     property int tiltAngle: 0
+    property int dist
     function mensajePopup(mensaje){
         toast.body = mensaje;
         toast.show();
+    }
+    function actualizaDistancia(){
+        objetivo.text = "Objetivo: "+dist+" m";
     }
     Container {
         layout: StackLayout {
@@ -42,11 +46,11 @@ Page {
             id: velocidad
             toValue: 100.0
             onImmediateValueChanged: {
-                            lblVelocidad.text = "Velocidad "+Math.round(immediateValue)+" m/s"
+                lblVelocidad.text = "Velocidad "+Math.round(immediateValue)+" m/s"
             }
         }
         Divider {
-            
+        
         }
         Container {
             layout: StackLayout {
@@ -73,24 +77,53 @@ Page {
                 sound.play();
                 var g = 9.8;
                 var radianes = tiltAngle * (0.017);
-                var dist = Math.round(((Math.round(velocidad.value)*Math.round(velocidad.value))*(2*(Math.sin(radianes))*(Math.cos(radianes))))/g);
-                distancia.text= dist + " m";
-                server.postMessage(dist);
+                var distance = Math.round(((Math.round(velocidad.value)*Math.round(velocidad.value))*(2*(Math.sin(radianes))*(Math.cos(radianes))))/g);
+                distancia.text= "Disparo: " + distance + " m";
+                var acerto = false;
+                if (distance >= dist-5 && distance <= dist+5) {
+                    acerto = true;
+                }
+                server.postMessage(acerto);
+                var mensaje = "Pruebe de nuevo"
+                if (acerto){
+                    mensaje = "Felicitaciones!"
+                }
+                mensajePopup(mensaje);
             }
         }
-        Label {
-            id: distancia
-            horizontalAlignment: HorizontalAlignment.Center
-            textStyle.base: SystemDefaults.TextStyles.BigText
+        Container {
+            layout: StackLayout {
+                orientation: LayoutOrientation.LeftToRight
+            }
+            Label {
+                layoutProperties: StackLayoutProperties {
+                    spaceQuota: 1
+                }
+                id: objetivo
+                horizontalAlignment: HorizontalAlignment.Center
+            }
+            Label {
+                layoutProperties: StackLayoutProperties {
+                    spaceQuota: 1
+                }
+                id: distancia
+                horizontalAlignment: HorizontalAlignment.Center
+            }
         }
         Divider {
-            
+        
         }
         WebView {
-            url: "local:///assets/cannon.html"
+            url: "local:///assets/webview/cannon.html"
             id: server
             onMessageReceived: {
-                mensajePopup(message.data);
+                if (message.data.match('dist')) {
+                    var distance = message.data.split('-')[1];
+                    dist = distance;
+                    var mensaje = "La bandera se encuentra a " + dist;
+                    mensajePopup(mensaje);
+                    actualizaDistancia();
+                }
             }
             settings.background: Color.Transparent 
             maxWidth: 680
@@ -103,9 +136,10 @@ Page {
         MediaPlayer {
             id: sound
             sourceUrl: "sounds/bang.wav"
-        }      
+        }   
     ]
     onCreationCompleted: {
         Application.mainWindow.screenIdleMode = 1;
     }
 }
+
