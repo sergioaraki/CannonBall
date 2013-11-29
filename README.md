@@ -17,10 +17,10 @@ la dirección ip que figura en los archivos html ubicados en la carpeta "webview
 En ambos archivos se encuentra 2 veces una ip, hay que reemplazarla por la ip donde se esta ejecutando 
 el servidor nodejs.
 
-Correr la aplicación en 2 dispositivos, el primero selecciona "Bandera" y "Jugar" asi el servidor le asigna
-una distancia aleatoria a la bandera, el segundo "Cañón" y "Jugar". El "Cañón" deberá acertar a la bandera
-asignando la velocidad de salida inicial de la bala con el slider superior y el ángulo de disparo inclinando 
-el dispositivo.
+Ejectutar la aplicación en 2 dispositivos, el primero selecciona "Cañón" y "Jugar", el segundo "Bandera" y "Jugar", 
+asi se asigna aleatoriamente la distancia de la bandera y es informada en el primer dispositivo. El "Cañón" deberá 
+acertar a la bandera asignando la velocidad de salida inicial de la bala con el slider superior y el ángulo de disparo 
+inclinando el dispositivo.
 
 
 
